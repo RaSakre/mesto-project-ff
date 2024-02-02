@@ -1,29 +1,29 @@
-// @todo: Темплейт карточки
-const cardTemplate = document.getElementById("card-template").content;
-
-// @todo: DOM узлы
-const cardsList = document.querySelector(".places__list");
-
+import { cardTemplate } from "../scripts";
 // @todo: Функция создания карточки
-
-const createCards = function (cardData, cardRemove) {
+export const createCards = function (
+  cardData,
+  cardRemove,
+  cardIsLiked,
+  cardImageScale
+) {
   const cloneTemplate = cardTemplate.cloneNode(true);
   const cardImage = cloneTemplate.querySelector(".card__image");
   cloneTemplate.querySelector(".card__image").alt = cardData.name;
   cloneTemplate.querySelector(".card__title").textContent = cardData.name;
   const deleteButton = cloneTemplate.querySelector(".card__delete-button");
+  const likeButton = cloneTemplate.querySelector(".card__like-button");
+  likeButton.addEventListener("click", cardIsLiked);
   deleteButton.addEventListener("click", cardRemove);
   cardImage.src = cardData.link;
+  cardImage.addEventListener("click", cardImageScale);
   return cloneTemplate;
 };
 
 // @todo: Функция удаления карточки
-
-const deleteCard = (evt) => {
+export const deleteCard = (evt) => {
   evt.target.closest(".card").remove();
 };
 
-// @todo: Вывести карточки на страницу
-initialCards.forEach(function (elem) {
-  cardsList.append(createCards(elem, deleteCard));
-});
+export function cardIsLiked(evt) {
+  evt.target.classList.toggle("card__like-button_is-active");
+};
