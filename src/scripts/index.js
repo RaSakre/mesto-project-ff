@@ -1,22 +1,21 @@
 import "../pages/index.css";
 import { initialCards } from "./cards.js";
-import { createCards, deleteCard, cardIsLiked } from "../components/card.js";
+import { createCard, deleteCard, toggleLikeCard } from "../components/card.js";
 import { showPopup, closePopup, closePopupWithEsc, closePopupWithOverlay, closePopupWithButton } from "../components/modal.js";
 
-const form1 = document.forms["edit-profile"];
-const form2 = document.forms["new-place"];
-const inputName = form1.elements.name;
-const inputDescription = form1.elements.description;
+const profileEditForm = document.forms["edit-profile"];
+const newCardForm = document.forms["new-place"];
+const inputName = profileEditForm.elements.name;
+const inputDescription = profileEditForm.elements.description;
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const inputCardName = document.forms["new-place"]["place-name"];
-const inputCardLink = form2.elements.link;
+const inputCardLink = newCardForm.elements.link;
 const popupTypeImage = document.querySelector(".popup_type_image");
 const popupImage = document.querySelector(".popup__image");
 const popupImageText = document.querySelector(".popup__caption");
 const popupNewPlace = document.querySelector(".popup_type_new-card");
 const addButton = document.querySelector(".profile__add-button");
-
 
 // @todo: Темплейт карточки
 export const cardTemplate = document.getElementById("card-template").content;
@@ -27,26 +26,26 @@ const cardsList = document.querySelector(".places__list");
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(function (elem) {
-  cardsList.append(createCards(elem, deleteCard, cardIsLiked, cardImageScale));
+  cardsList.append(createCard(elem, deleteCard, toggleLikeCard, cardImageScale));
 });
 
 const popupProfileEdit = document.querySelector(".popup_type_edit");
 const editButton = document.querySelector(".profile__edit-button");
 editButton.addEventListener("click", function () {
-  showPopup(popupProfileEdit);
   inputName.value = profileTitle.textContent;
   inputDescription.value = profileDescription.textContent;
+	showPopup(popupProfileEdit);
 });
 
 
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   profileTitle.textContent = inputName.value;
   profileDescription.textContent = inputDescription.value;
   closePopup(popupProfileEdit);
 };
 
-form1.addEventListener("submit", handleFormSubmit);
+profileEditForm.addEventListener("submit", handleProfileFormSubmit);
 
 addButton.addEventListener("click", function () {
   showPopup(popupNewPlace);
@@ -56,21 +55,21 @@ function addNewCard(card) {
   cardsList.prepend(card);
 };
 
-form2.addEventListener("submit", cardFormFn);
+newCardForm.addEventListener("submit", cardFormFn);
 
 function cardFormFn(evt) {
   evt.preventDefault();
-  const newAddedCard = createCards(
+  const newAddedCard = createCard(
     {
       name: inputCardName.value,
       link: inputCardLink.value,
     },
     deleteCard,
-    cardIsLiked,
+    toggleLikeCard,
     cardImageScale
   );
   addNewCard(newAddedCard);
-  form2.reset();
+  newCardForm.reset();
   closePopup(popupNewPlace);
 };
 

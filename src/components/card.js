@@ -1,9 +1,9 @@
 import { cardTemplate } from "../scripts";
 // @todo: Функция создания карточки
-export const createCards = function (
+export const createCard = function (
   cardData,
   cardRemove,
-  cardIsLiked,
+  toggleLikeCard,
   cardImageScale
 ) {
   const cloneTemplate = cardTemplate.cloneNode(true);
@@ -12,7 +12,7 @@ export const createCards = function (
   cloneTemplate.querySelector(".card__title").textContent = cardData.name;
   const deleteButton = cloneTemplate.querySelector(".card__delete-button");
   const likeButton = cloneTemplate.querySelector(".card__like-button");
-  likeButton.addEventListener("click", cardIsLiked);
+  likeButton.addEventListener("click", toggleLikeCard);
   deleteButton.addEventListener("click", cardRemove);
   cardImage.src = cardData.link;
   cardImage.addEventListener("click", cardImageScale);
@@ -24,6 +24,6 @@ export const deleteCard = (evt) => {
   evt.target.closest(".card").remove();
 };
 
-export function cardIsLiked(evt) {
+export function toggleLikeCard(evt) {
   evt.target.classList.toggle("card__like-button_is-active");
 };
