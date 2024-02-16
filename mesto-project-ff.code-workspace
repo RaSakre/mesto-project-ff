@@ -1,8 +1,8 @@
 {
-	"folders": [
-		{
-			"path": "d:/studying front/dev/mesto/mesto-project-ff"
-		}
-	],
-	"settings": {}
+  "folders": [
+	{
+		"path": "."
+	}
+],
+  "settings": {}
 }
