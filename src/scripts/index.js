@@ -10,6 +10,8 @@ import {
   enableValidation,
 } from "./validation";
 import {
+	getProfileRequest,
+	getCardsRequest,
 	profilePatchRequest,
 	avatarPatchRequest,
 	postCardRequest,
@@ -43,6 +45,7 @@ const avatarChangeButton = document.querySelector(".profile__image_button");
 const avatarPopup = document.querySelector(".popup__avatar-change");
 const avatarForm = document.forms.avatar;
 const avatarInput = avatarForm.elements.link;
+const avatarButton = avatarForm.elements.avaSave
 
 editButton.addEventListener("click", function () {
   editNameInput.value = profileTitle.textContent;
@@ -61,19 +64,23 @@ profileAddButton.addEventListener("click", function () {
 avatarChangeButton.addEventListener("click", function () {
   openPopup(avatarPopup);
   clearValidation(avatarForm, validationConfig);
-	avatarInput.value = null
+	avatarInput.value = ''
+	if (avatarInput.value === '') {
+		avatarButton.classList.add('popup__button_disabled')
+	} else {
+		avatarButton.classList.remove('popup__button_disabled')
+	}
 });
 
-function avatarSubmit(evt) {
+function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
-  const popup = document.querySelector(".popup_is-opened");
   const button = avatarForm.elements.avaSave;
   button.textContent = "Сохранение...";
   avatarPatchRequest(avatarInput.value)
     .then(() => {
       profileAvatar.style.backgroundImage = "url(" + avatarInput.value + ")";
       avatarForm.reset();
-      closePopup(popup);
+      closePopup(avatarPopup);
     })
     .catch((err) => {
       console.log(err);
@@ -83,10 +90,9 @@ function avatarSubmit(evt) {
     });
 }
 
-avatarForm.addEventListener("submit", avatarSubmit);
+avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
-function formSubmit(evt) {
-  const popup = document.querySelector(".popup_is-opened");
+function  handleProfileFormSubmit(evt) {
   evt.preventDefault();
   const button = editForm.elements.profileSave;
   button.textContent = "Сохранение...";
@@ -94,7 +100,7 @@ function formSubmit(evt) {
     .then(() => {
       profileTitle.textContent = editNameInput.value;
       profileJob.textContent = editJobInput.value;
-      closePopup(popup);
+      closePopup(popupEdit);
     })
     .catch((err) => {
       console.log(err);
@@ -104,7 +110,7 @@ function formSubmit(evt) {
     });
 }
 
-editForm.addEventListener("submit", formSubmit);
+editForm.addEventListener("submit", handleProfileFormSubmit);
 
 function addNewCard(card) {
   placesList.prepend(card);
@@ -112,7 +118,6 @@ function addNewCard(card) {
 
 newCardForm.addEventListener("submit", function (evt) {
   evt.preventDefault();
-  const popup = document.querySelector(".popup_is-opened");
   const button = newCardForm.elements.cardSave;
   button.textContent = "Сохранение...";
   const newCardObj = {
@@ -132,7 +137,7 @@ newCardForm.addEventListener("submit", function (evt) {
       );
       newCardForm.reset();
       clearValidation(newCardForm, validationConfig);
-      closePopup(popup);
+      closePopup(popupNewCard);
       addNewCard(cardInfo);
     })
     .catch((err) => {
@@ -144,8 +149,8 @@ newCardForm.addEventListener("submit", function (evt) {
 });
 
 function scaleCardImage(evt) {
-  popupScaleImage.src = evt.target.closest(".card__image").src;
-  popupImageDescription.textContent = evt.target.closest(".card__image").alt;
+  popupScaleImage.src = evt.target.src;
+  popupImageDescription.textContent = evt.target.alt;
   openPopup(popupBigImage);
 }
 //----------------------
@@ -161,29 +166,8 @@ const validationConfig = {
 
 enableValidation(validationConfig);
 
-const firstRequest = fetch(
-  "https://nomoreparties.co/v1/wff-cohort-11/users/me",
-  {
-    headers: {
-      authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
-    },
-  }
-);
 
-const secondRequest = fetch("https://nomoreparties.co/v1/wff-cohort-11/cards", {
-  headers: {
-    authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
-  },
-});
-
-Promise.all([firstRequest, secondRequest])
-.then((res) => {
-	return Promise.all(
-		res.map(function (response) {
-			return response.json();
-		})
-	);
-})
+Promise.all([getProfileRequest(), getCardsRequest()])
 .then((data) => {
 	const userData = data[0];
 	const cardsData = data[1];

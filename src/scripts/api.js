@@ -20,6 +20,18 @@ function request(url, options) {
   return fetch(url, options).then(checkServerState);
 }
 
+function getProfileRequest (){
+	return request(config['baseUrl'] + '/users/me', {
+		headers: config['headers']
+	})
+}
+
+function getCardsRequest () {
+	return request(config['baseUrl'] + '/cards' , {
+		headers: config['headers']
+	})
+}
+
 function profilePatchRequest(inputNameValue, inputJobValue) {
   return request(config["baseUrl"] + "/users/me", {
     method: "PATCH",
@@ -52,12 +64,35 @@ function postCardRequest(obj) {
   });
 }
 
+function deleteCardRequest (cardId) {
+	return request(config['baseUrl'] + `/cards/${cardId}`, {
+		method: 'DELETE',
+		headers: config['headers']
+	})
+}
+
+function putLikeRequest (cardId) {
+	return request(config['baseUrl'] + `/cards/likes/${cardId}` , {
+		method: 'PUT',
+		headers: config['headers']
+	})
+}
+
+function deleteLikeRequest (cardId) {
+	return request(config['baseUrl'] + `/cards/likes/${cardId}` , {
+		method: 'DELETE',
+		headers: config['headers']
+	})
+}
+
 
 	export {
-		config,
-		checkServerState,
-		request,
+		getProfileRequest,
+		getCardsRequest,
 		profilePatchRequest,
 		avatarPatchRequest,
 		postCardRequest,
+		deleteCardRequest,
+		putLikeRequest,
+		deleteLikeRequest
 	}

@@ -1,4 +1,5 @@
 import { cardTemplate } from "../scripts";
+import { deleteCardRequest, putLikeRequest, deleteLikeRequest } from "../scripts/api";
 
 // @todo: Функция создания карточки
 
@@ -20,7 +21,7 @@ export function createCard(
     cardData.name);
   const likeButton = cardContent.querySelector(".card__like-button");
   likeButton.addEventListener("click", function () {
-    likeCard(likeButton, cardData._id);
+    likeCard(likeButton, cardData._id, cardLikeCount);
   });
   const likes = cardData.likes;
   likes.forEach(function (el) {
@@ -48,17 +49,10 @@ export function createCard(
 // @todo: Функция удаления карточки
 export function deleteCard(button, cardId) {
   const card = button.closest(".card");
-  fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/${cardId}`, {
-    method: "DELETE",
-    headers: {
-      authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
-    },
-  })
-    .then((res) => {
-      if (res.ok) {
-        card.remove();
-      }
-    })
+	deleteCardRequest(cardId)
+	.then(() =>{
+		card.remove()
+	})
     .catch((err) => {
       console.log(err);
     });
@@ -66,40 +60,21 @@ export function deleteCard(button, cardId) {
 
 // Функция постановки лайка
 
-export function likeCard(button, cardId) {
-  const card = button.closest(".card");
+export function likeCard(button, cardId, likeCounter) {
   if (!button.classList.contains("card__like-button_is-active")) {
-    fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
-      method: "PUT",
-      headers: {
-        authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
+		putLikeRequest(cardId)
       .then((data) => {
         button.classList.toggle("card__like-button_is-active");
-        const cardLikeCount = card.querySelector(".card__like-count");
-        cardLikeCount.textContent = data.likes.length;
+        likeCounter.textContent = data.likes.length;
       })
       .catch((err) => {
         console.log(err);
       });
   } else {
-    fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
-      method: "DELETE",
-      headers: {
-        authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
-      },
-    })
-      .then((res) => {
-        return res.json();
-      })
+		deleteLikeRequest(cardId)
       .then((data) => {
         button.classList.toggle("card__like-button_is-active");
-        const cardLikeCount = card.querySelector(".card__like-count");
-        cardLikeCount.textContent = data.likes.length;
+        likeCounter.textContent = data.likes.length;
       })
       .catch((err) => {
         console.log(err);
