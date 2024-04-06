@@ -1,0 +1,12 @@
+.popup__content_edited {
+	max-width: 430px;
+	min-height: 272px;
+	background-color: #fff;
+	border-radius: 10px;
+	box-sizing: border-box;
+	max-width: 430px;
+	min-height: 272px;
+	padding: 34px 36px;
+	position: relative;
+	width: 100%;
+}

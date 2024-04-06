@@ -1,37 +1,43 @@
-function showPopup(popup) {
+function openPopup(popup) {
   popup.classList.add("popup_is-opened");
-  document.addEventListener("keydown", closePopupWithEsc);
-  document.addEventListener("click", closePopupWithOverlay);
-  document.addEventListener("click", closePopupWithButton);
-};
+  document.addEventListener("keydown", closePopupEscape);
+  document.addEventListener("click", closePopupOverlay);
+  document.addEventListener("click", closeButtonPopup);
+}
 
 function closePopup(popup) {
   popup.classList.remove("popup_is-opened");
-  document.removeEventListener("keydown", closePopupWithEsc);
-  document.removeEventListener("click", closePopupWithOverlay);
-  document.removeEventListener("click", closePopupWithButton);
-};
-
-function closePopupWithEsc(evt) {
-  const popup = document.querySelector(".popup_is-opened");
-  if (evt.key === "Escape") {
-    closePopup(popup);
-  }
-};
-
-function closePopupWithOverlay(evt) {
-  const popup = document.querySelector(".popup_is-opened");
-	if (popup === evt.target) {
-    closePopup(popup);
+  document.removeEventListener("keydown", closePopupEscape);
+  document.removeEventListener("click", closePopupOverlay);
+  document.removeEventListener("click", closeButtonPopup);
 }
-};
 
-function closePopupWithButton(evt) {
-	const closeButton = evt.target.closest(".popup__close");
+function closeButtonPopup(evt) {
+  const closeButton = evt.target.closest(".popup__close");
   if (evt.target === closeButton) {
     const popup = document.querySelector(".popup_is-opened");
     closePopup(popup);
   }
-};
+}
 
-export {showPopup, closePopup, closePopupWithEsc, closePopupWithOverlay, closePopupWithButton}
+function closePopupEscape(evt) {
+  const popup = document.querySelector(".popup_is-opened");
+  if (evt.key === "Escape") {
+    closePopup(popup);
+  }
+}
+
+function closePopupOverlay(evt) {
+  const popup = document.querySelector(".popup_is-opened");
+  if (evt.target.classList.contains("popup")) {
+    closePopup(popup);
+  }
+}
+
+export {
+  openPopup,
+  closePopup,
+  closeButtonPopup,
+  closePopupEscape,
+  closePopupOverlay,
+};

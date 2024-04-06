@@ -1,29 +1,108 @@
 import { cardTemplate } from "../scripts";
+
 // @todo: Функция создания карточки
-export const createCard = function (
+
+export function createCard(
   cardData,
-  cardRemove,
-  toggleLikeCard,
-  cardImageScale
+  deleteCard,
+  likeCard,
+  scaleCardImage,
+  ownerId
 ) {
-  const cloneTemplate = cardTemplate.cloneNode(true);
-  const cardImage = cloneTemplate.querySelector(".card__image");
-  cloneTemplate.querySelector(".card__image").alt = cardData.name;
-  cloneTemplate.querySelector(".card__title").textContent = cardData.name;
-  const deleteButton = cloneTemplate.querySelector(".card__delete-button");
-  const likeButton = cloneTemplate.querySelector(".card__like-button");
-  likeButton.addEventListener("click", toggleLikeCard);
-  deleteButton.addEventListener("click", cardRemove);
+  const cardContent = cardTemplate
+    .querySelector(".places__item")
+    .cloneNode(true);
+  const cardImage = cardContent.querySelector(".card__image");
   cardImage.src = cardData.link;
-  cardImage.addEventListener("click", cardImageScale);
-  return cloneTemplate;
-};
+  const cardDescription = (cardContent.querySelector(".card__image").alt =
+    cardData.name);
+  const cardTitle = (cardContent.querySelector(".card__title").textContent =
+    cardData.name);
+  const likeButton = cardContent.querySelector(".card__like-button");
+  likeButton.addEventListener("click", function () {
+    likeCard(likeButton, cardData._id);
+  });
+  const likes = cardData.likes;
+  likes.forEach(function (el) {
+    if (el._id === ownerId) {
+      likeButton.classList.add("card__like-button_is-active");
+    }
+  });
+  cardImage.addEventListener("click", scaleCardImage);
+  const cardLikeCount = cardContent.querySelector(".card__like-count");
+  cardLikeCount.textContent = cardData.likes.length;
+  if (cardData.owner._id === ownerId) {
+    const myCardId = cardData._id;
+    const cardDeleteIcon = cardContent.querySelector(".card__delete-button");
+    cardDeleteIcon.addEventListener("click", function () {
+      deleteCard(cardDeleteIcon, myCardId);
+    });
+  } else {
+    const cardDeleteButton = (cardContent.querySelector(
+      ".card__delete-button"
+    ).style.display = "none");
+  }
+  return cardContent;
+}
 
 // @todo: Функция удаления карточки
-export const deleteCard = (evt) => {
-  evt.target.closest(".card").remove();
-};
+export function deleteCard(button, cardId) {
+  const card = button.closest(".card");
+  fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/${cardId}`, {
+    method: "DELETE",
+    headers: {
+      authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
+    },
+  })
+    .then((res) => {
+      if (res.ok) {
+        card.remove();
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
 
-export function toggleLikeCard(evt) {
-  evt.target.classList.toggle("card__like-button_is-active");
-};
+// Функция постановки лайка
+
+export function likeCard(button, cardId) {
+  const card = button.closest(".card");
+  if (!button.classList.contains("card__like-button_is-active")) {
+    fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
+      method: "PUT",
+      headers: {
+        authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        button.classList.toggle("card__like-button_is-active");
+        const cardLikeCount = card.querySelector(".card__like-count");
+        cardLikeCount.textContent = data.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    fetch(`https://nomoreparties.co/v1/wff-cohort-11/cards/likes/${cardId}`, {
+      method: "DELETE",
+      headers: {
+        authorization: "be098c14-0a5a-4955-8891-76d13cd6a64f",
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        button.classList.toggle("card__like-button_is-active");
+        const cardLikeCount = card.querySelector(".card__like-count");
+        cardLikeCount.textContent = data.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+}
