@@ -1,5 +1,9 @@
 import { cardTemplate } from "../scripts";
-import { deleteCardRequest, putLikeRequest, deleteLikeRequest } from "../scripts/api";
+import {
+  deleteCardRequest,
+  putLikeRequest,
+  deleteLikeRequest,
+} from "../scripts/api";
 
 // @todo: Функция создания карточки
 
@@ -49,10 +53,10 @@ export function createCard(
 // @todo: Функция удаления карточки
 export function deleteCard(button, cardId) {
   const card = button.closest(".card");
-	deleteCardRequest(cardId)
-	.then(() =>{
-		card.remove()
-	})
+  deleteCardRequest(cardId)
+    .then(() => {
+      card.remove();
+    })
     .catch((err) => {
       console.log(err);
     });
@@ -62,7 +66,7 @@ export function deleteCard(button, cardId) {
 
 export function likeCard(button, cardId, likeCounter) {
   if (!button.classList.contains("card__like-button_is-active")) {
-		putLikeRequest(cardId)
+    putLikeRequest(cardId)
       .then((data) => {
         button.classList.toggle("card__like-button_is-active");
         likeCounter.textContent = data.likes.length;
@@ -71,7 +75,7 @@ export function likeCard(button, cardId, likeCounter) {
         console.log(err);
       });
   } else {
-		deleteLikeRequest(cardId)
+    deleteLikeRequest(cardId)
       .then((data) => {
         button.classList.toggle("card__like-button_is-active");
         likeCounter.textContent = data.likes.length;
