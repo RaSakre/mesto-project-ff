@@ -54,11 +54,14 @@ editButton.addEventListener("click", function () {
 profileAddButton.addEventListener("click", function () {
   clearValidation(newCardForm, validationConfig);
   openPopup(popupNewCard);
+	newCardName.value = null;
+	newCardLink.value = null
 });
 
 avatarChangeButton.addEventListener("click", function () {
   openPopup(avatarPopup);
   clearValidation(avatarForm, validationConfig);
+	avatarInput.value = null
 });
 
 function avatarSubmit(evt) {

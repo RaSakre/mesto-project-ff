@@ -89,11 +89,5 @@ function clearValidation(formElement, validationConfig) {
 
 export {
   clearValidation,
-  toggleButtonState,
-  hasInvalidInput,
   enableValidation,
-  setInputListeners,
-  checkInputValidity,
-  hideError,
-  showError,
 };
