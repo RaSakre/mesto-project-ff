@@ -6,4 +6,4 @@ https://github.com/RaSakre/mesto-project-ff.git
 
 ### Название репазитория - _mesto-project-ff_
 
-Ссылка на проект [rasakre.github.io/mesto-project-ff/]**(https://rasakre.github.io/mesto-project-ff/)**
+Ссылка на проект **(https://rasakre.github.io/mesto-project-ff/)**
