@@ -188,7 +188,6 @@ Promise.all([firstRequest, secondRequest])
 	profileAvatar.style.backgroundImage = "url(" + userData.avatar + ")";
 	profileTitle.textContent = userData.name;
 	profileJob.textContent = userData.about;
-	profileAvatar.style.backgroundImage =  "url(" + userData.avatar + ")" 
 	cardsData.forEach(function (el) {
 		placesList.append(
 			createCard(el, deleteCard, likeCard, scaleCardImage, ownerId)
